@@ -18,6 +18,7 @@ import Footer from './components/Footer';
 import { FloatingDockNav } from './components/FloatingDockNav';
 import Header from './components/Header';
 import LoginPageOld from './components/LoginPage';
+import AdminPanel from './pages/AdminPanel';
 
 function Home() {
   return (
@@ -70,6 +71,7 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<LoginPageOld />} />
+              <Route path="/admin" element={<AdminPanel />} />
               {/* Future pages: */}
               {/* <Route path="/about" element={<AboutPage />} /> */}
             </Routes>
