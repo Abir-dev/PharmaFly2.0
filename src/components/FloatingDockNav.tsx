@@ -1,7 +1,5 @@
-import React from "react";
 import { FloatingDock } from "./ui/floatingDock";
 import {
-  IconBrandGithub,
   IconBrandX,
   IconExchange,
   IconHome,
