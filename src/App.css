@@ -1,0 +1,1658 @@
+@import "tailwindcss";
+
+*{
+    font-family: 'Poppins',sans-serif;
+}
+body {
+    font-family: 'Poppins',sans-serif;
+  height: 100%;
+  width: 100%;
+    line-height: 1.6;
+background-color: black;
+    color: #caf0f8;  
+}
+header {
+    background: black;
+    height: 56px;
+    min-height: 56px;
+    color: #CAF0F8; 
+    text-align: center;
+    box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    flex-wrap: wrap;
+    padding: 0 2vw;
+}
+
+.introduction{
+    background-image: url('drone3.jpg');
+    background-size: cover;
+    background-position: center;
+    background-color: #18181b;
+    height: 100vh;
+    padding: 2rem 1rem;
+    min-height: 40vh;
+    text-align: center;
+}
+
+.logo {
+    position: center;
+    max-width: 80px;
+    height: 40px;
+    align-content: center;
+    width: 150px;
+    z-index: 1000;
+    padding-top: 0;
+}
+
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+}
+
+nav ul li {
+    display: inline;
+}
+
+nav ul li a {
+    color: #CAF0F8; 
+    text-decoration: none;
+    padding: 0.3rem 0.9rem;
+    transition: background-color 0.3s ease;
+    font-size: 1rem;
+}
+
+nav ul li a:hover {
+    background-color: #00B4D8;  
+    border-radius: 5px;
+}
+.welcome-section {
+    background-image: url('drone.jpg');
+    background-size: cover;
+    background-position: center;
+    background-color: transparent !important;
+    background-blend-mode: normal !important;
+    height: 100vh;
+    display: flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #CAF0F8;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    padding: 2rem 1rem;
+    min-height: 50vh;
+}
+
+.welcome-section::before {
+    content: none !important;
+    background: none !important;
+}
+
+#about{
+    height: 100vh;
+    display: flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #CAF0F8;
+}
+h1, h2, h3 {
+    margin: 1rem 0;
+}
+
+h1 {
+    font-size: 4rem;
+    color: #48CAE4; 
+}
+
+h2 {
+    font-size: 2.5rem;
+    padding-left: 20px;
+    color: #ADE8F4;  
+}
+
+h1.animated-text, h2.animated-text {
+    animation: textGlow 1.5s infinite alternate;
+}
+
+@keyframes textGlow {
+    from {
+        text-shadow: 0 0 10px #48CAE4;  
+    }
+    to {
+        text-shadow: 0 0 20px #48CAE4;  
+    }
+}
+
+
+.fit-picture {
+    position:cover;
+    height: 100px;
+    width: 100px;
+    border-radius: 10px;
+}
+
+#features { background-image: url('drone2.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    padding: 4rem;
+    margin-bottom: rem;
+    transition: transform 0.3s ease;
+    height:100%;
+    align-content: center;
+    display: flex;
+    flex-direction:column;
+    justify-content: space-evenly;
+    .service-image{
+        height:400px;
+        width:400px;
+        border-radius: 200%;
+    }
+}
+
+.service { 
+    height: 100vh;
+    padding: 4rem;
+    border: 2px solid #00B4D8; 
+    background: #18181b;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+    justify-content: center;
+  
+}
+
+.service:hover {
+    transform: scale(1.05);
+    background-color:#00B4D8;  
+}
+
+#hours{background-image: url('time.jpg');
+    background-size: cover;
+    background-position: center;
+    height: 100vh;
+    display: flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: start;
+    text-align: center;
+    color: #CAF0F8;
+}
+
+button {
+    padding: 0.75rem;
+    background-color: #00B4D8; 
+    color: #03045E; 
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #0096C7;  
+}
+
+
+.button {
+    padding: 0.75rem;
+    border: 1px solid #00B4D8; 
+    background-color:#00B4D8; 
+    color:#03045E;
+    text-decoration: none;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.button:hover {
+    background-color: #0096C7;  
+}
+#reviews{
+    max-height: 100vh;
+}
+#reviews{
+    background-image: url('drone5.jpg');
+    background-size: cover;
+    background-position: center;
+    color: #CAF0F8;
+}
+.review{
+    padding: 1rem;
+    border: 1px solid #00B4D8; 
+    background: #18181b;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+}
+
+footer {
+    background-image: url('drone.jpg');
+    background-size: cover;
+    background-position: center;
+    max-height: 100%;
+    max-width: 100%;
+    display: flex;
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #CAF0F8;
+text-align: center;
+padding: 1rem;
+position: static;
+box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.3);
+color: #CAF0F8; 
+    flex-direction: column;
+    align-items: center;
+    padding: 1.5rem 0.5rem;
+}
+
+footer p {
+  text-align: right;
+  width: 100%;
+  margin: 0;
+}
+@media (max-width: 700px) {
+  footer p {
+    text-align: center;
+  }
+}
+
+.whatsapp-widget {
+position: fixed;
+bottom: 20px;
+right: 20px;
+width: 50px;
+height: 50px;
+}
+
+.whatsapp-widget img {
+width: 100%;
+height: 100%;
+border-radius: 50%;
+box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+transition: transform 0.3s;
+}
+
+.whatsapp-widget img:hover {
+transform: scale(1.1);
+}
+
+.animated-button {
+position: static;
+overflow: hidden;
+z-index: 1;
+background-color: #00B4D8; 
+color: #CAF0F8; 
+}
+
+.animated-button::before {
+    content: none !important;
+    background: none !important;
+    display: none !important;
+}
+
+.animated-button:hover::before {
+    width: 0 !important;
+    height: 0 !important;
+    background: none !important;
+}
+
+.service-image {
+height: 100%;
+width: 100%;
+padding: 2rem;
+border-radius: 10px;
+}
+
+#services {
+height: 100%;
+width: 96%;
+display: flex;
+justify-content: flex-start;
+align-items: center;
+}
+
+#intro {
+height: 100%;
+width: auto;
+}
+
+#contact {
+height: 100%;
+width: auto;
+}
+.animated-button {
+animation: buttonPulse 2s infinite;
+}
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 50px;
+    background: conic-gradient(45deg, black,white,black);
+}
+#contact{
+    background-image: url('drone6.jpg');
+    background-size:cover;
+    background-position:center;
+}
+#contact .container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+}
+.contact-section {
+  width: 40%;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.form-section {
+  width: 60%;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.contact-section h1 {
+    font-size: 36px;
+    margin-bottom: 20px;
+}
+
+.contact-section p {
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+.social-icons {
+    margin-top: 20px;
+}
+
+.social-icons a {
+    margin-right: 15px;
+}
+
+.social-icons img {
+    width: 30px;
+    height: 30px;
+}
+
+.form-section {
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+    background: rgba(24,24,27,0.95);
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+}
+.form-section h2 {
+    font-size: 2rem;
+    margin-bottom: 1.5rem;
+    color: #ADE8F4;
+    text-align: center;
+}
+.form-container {
+    width: 100%;
+    max-width: 420px;
+    margin: 0 auto;
+    background: none;
+    box-shadow: none;
+    padding: 0;
+    border-radius: 0;
+    display: block;
+}
+.input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 1.2rem;
+    margin-bottom: 1.5rem;
+}
+.input-field {
+    background: rgba(0,0,0,0.2);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    border: 1px solid #333;
+    transition: border 0.2s;
+}
+.input-field:focus-within {
+    border: 1.5px solid #48CAE4;
+}
+.input-field input,
+.input-field textarea {
+    width: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    padding: 0.75rem 0.5rem;
+    color: #caf0f8;
+    font-size: 1rem;
+    resize: none;
+}
+.input-field textarea {
+    min-height: 80px;
+    resize: vertical;
+}
+.input-field i {
+    margin-right: 0.75rem;
+    color: #ADE8F4;
+    font-size: 1.2rem;
+}
+.btn-field {
+    display: flex;
+    justify-content: flex-end;
+}
+.signupbtn {
+    background: #00B4D8;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.signupbtn:hover, .signupbtn:focus {
+    background: #48CAE4;
+    color: #03045E;
+}
+@media (max-width: 700px) {
+    .form-section {
+        padding: 1rem 0.2rem;
+        max-width: 100vw;
+    }
+    .form-container {
+        max-width: 100vw;
+    }
+}
+@media (max-width: 900px) {
+  #contact .container {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 1.5rem;
+  }
+  .contact-section, .form-section {
+    width: 100%;
+    min-width: unset;
+    align-items: stretch;
+  }
+}
+
+/* --- UI Enhancements for Smoother, Modern Look --- */
+
+.features-section {
+  padding: 4rem 2rem;
+  background: #18181b;
+  border-radius: 24px;
+  margin: 2rem auto;
+  max-width: 1200px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+}
+
+.service-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
+  align-items: stretch;
+}
+
+.service-card {
+  background: rgba(20, 20, 30, 0.98);
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  padding: 2rem 1.5rem 2.5rem 1.5rem;
+  width: 320px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1.5px solid #222;
+}
+
+.service-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  border-color: #fff;
+}
+
+.service-card h3 {
+  color: #ADE8F4;
+  margin: 1rem 0 0.5rem 0;
+  font-size: 1.5rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.service-card p {
+  color: #caf0f8;
+  font-size: 1rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.service-card .service-image {
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  object-fit: cover;
+  margin-bottom: 1rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+@media (max-width: 700px) {
+  .service-card .service-image {
+    width: 40px;
+    height: 40px;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 900px) {
+  .service-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .features-section {
+    padding: 2rem 0.5rem;
+  }
+}
+
+/* --- General Section Spacing and Smoother Transitions --- */
+section {
+  margin-bottom: 2.5rem;
+  transition: background 0.3s, box-shadow 0.3s;
+  background: none;
+}
+
+/* --- Header & Footer Enhancements --- */
+header, footer {
+  box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+  border-radius: 0 0 18px 18px;
+}
+
+header nav ul li a {
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  padding: 0.5rem 1.2rem;
+}
+
+header nav ul li a.active, header nav ul li a:focus {
+  background: #48CAE4;
+  color: #03045E;
+}
+
+footer {
+  margin-top: 2rem;
+  border-radius: 18px 18px 0 0;
+}
+
+/* --- Button Smoothing --- */
+.button, button, .animated-button {
+  font-size: 1.1rem;
+  font-weight: 500;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,180,216,0.10);
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+}
+
+.button:active, button:active, .animated-button:active {
+  box-shadow: 0 1px 4px rgba(0,180,216,0.18);
+}
+
+/* --- Welcome Section --- */
+.welcome-section {
+  padding-top: 4rem;
+  padding-bottom: 4rem;
+  min-height: 60vh;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  background-blend-mode: normal;
+}
+
+.welcome-section h1, .welcome-section h2 {
+  text-shadow: 0 2px 8px rgba(0,0,0,0.10);
+}
+
+/* --- Contact Section --- */
+#contact .container {
+  flex-wrap: wrap;
+  gap: 2rem;
+  padding: 2.5rem 1rem;
+  border-radius: 18px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+  background: rgba(0,0,0,0.85);
+  align-items: flex-start;
+}
+
+.contact-section, .form-section {
+  min-width: 300px;
+  max-width: 480px;
+}
+
+@media (max-width: 700px) {
+  #contact .container {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 1.2rem 0.2rem;
+  }
+  .contact-section, .form-section {
+    width: 100%;
+    min-width: unset;
+    max-width: unset;
+  }
+}
+
+/* --- Responsive and Accessibility Improvements --- */
+
+/* Header: Responsive nav and logo */
+@media (max-width: 700px) {
+  header {
+    padding: 0 0.5vw;
+  }
+  .header-bar {
+    min-height: 48px;
+    padding: 0 0.3rem;
+    gap: 1vw;
+  }
+  .logo {
+    max-width: 64px;
+    height: 32px;
+  }
+  nav ul {
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+  }
+}
+
+/* Welcome Section: Responsive text and button */
+@media (max-width: 500px) {
+  .welcome-section h1 {
+    font-size: 1.5rem;
+  }
+  .welcome-section h2 {
+    font-size: 1.1rem;
+  }
+}
+
+/* About Section: Responsive */
+@media (max-width: 500px) {
+  .introduction h2 {
+    font-size: 1rem;
+  }
+}
+
+/* Features/Services Section: Responsive grid */
+.features-section {
+  padding: 2rem 1rem;
+  max-width: 100vw;
+}
+.service-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.5rem;
+}
+.service-card {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Contact Section: Responsive */
+#contact .container {
+  flex-direction: column;
+  padding: 1.5rem 0.5rem;
+  gap: 1.5rem;
+}
+.contact-section, .form-section {
+  width: 100%;
+  min-width: unset;
+  max-width: 100vw;
+}
+.form-container {
+  width: 100%;
+  min-width: unset;
+  max-width: 100vw;
+  padding: 1.5rem 0.5rem;
+}
+
+/* Footer: Responsive */
+footer {
+  flex-direction: column;
+  align-items: center;
+  padding: 1.5rem 0.5rem;
+}
+footer .logo {
+  max-width: 100px;
+  padding: 0;
+}
+
+/* Buttons: Focus and accessibility */
+.button, button, .animated-button {
+  outline: none;
+}
+.button:focus, button:focus, .animated-button:focus {
+  outline: 2px solid #48CAE4;
+  outline-offset: 2px;
+}
+
+/* Forms: Responsive and accessible */
+@media (max-width: 500px) {
+  .form-container {
+    padding: 1rem 0.2rem;
+  }
+  .input-field input {
+    font-size: 0.95rem;
+    padding: 0.5rem 0.2rem;
+  }
+}
+
+/* Hamburger menu styles for mobile header */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  margin-left: 0.5rem;
+  z-index: 1100;
+}
+.menu-icon svg {
+  display: block;
+}
+@media (max-width: 700px) {
+  .menu-toggle {
+    display: block;
+  }
+  header nav {
+    display: none;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100vw;
+    background: #18181b;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    z-index: 1000;
+    padding: 1rem 0;
+    border-radius: 0 0 18px 18px;
+    transition: all 0.3s;
+  }
+  header nav.open {
+    display: block;
+    animation: slideDown 0.3s;
+  }
+  header nav ul {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    width: 100%;
+    padding-left: 2rem;
+  }
+  #sign {
+    margin-top: 1rem;
+  }
+}
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Sleek mobile header styles */
+.header-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 2vw;
+  width: 100%;
+  min-height: 56px;
+  padding: 0 0.5rem;
+  background: transparent;
+}
+.desktop-nav {
+  display: flex;
+  align-items: center;
+  gap: 2vw;
+  margin-left: auto;
+}
+.desktop-nav ul {
+  display: flex;
+  align-items: center;
+  gap: 1.2vw;
+  margin: 0;
+  padding: 0;
+}
+.desktop-nav ul li {
+  display: inline-block;
+}
+.desktop-nav #sign {
+  margin-left: 1.5vw;
+}
+.mobile-nav {
+  display: none;
+}
+@media (max-width: 700px) {
+  .desktop-nav {
+    display: none;
+  }
+  .mobile-nav {
+    display: block;
+    position: absolute;
+    top: 60px;
+    left: 0;
+    width: 100vw;
+    background: #18181b;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+    z-index: 1000;
+    padding: 1.5rem 0 1rem 0;
+    border-radius: 0 0 18px 18px;
+    animation: slideDown 0.3s;
+  }
+  .mobile-nav ul {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.2rem;
+    width: 100%;
+    padding-left: 2rem;
+    margin-bottom: 1rem;
+  }
+  .mobile-nav #sign {
+    margin-left: 2rem;
+    width: calc(100% - 2rem);
+  }
+}
+
+.contact-form-box {
+  background: rgba(24, 24, 27, 0.7);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  border-radius: 18px;
+  padding: 2rem 1.5rem;
+  margin: 0;
+  max-width: 480px;
+  min-width: 260px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  backdrop-filter: blur(8px);
+}
+.contact-info-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+.contact-info-item {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1.1rem;
+  color: #caf0f8;
+}
+.contact-info-item i {
+  color: #48CAE4;
+  font-size: 1.3rem;
+}
+@media (max-width: 900px) {
+  .contact-form-box {
+    max-width: 100vw;
+    min-width: unset;
+    padding: 1.2rem 0.5rem;
+  }
+}
+
+.form-section, .contact-form-box {
+  align-items: flex-start !important;
+  margin: 0;
+  margin-left: auto;
+}
+
+.contact-new-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2.5rem;
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 3rem 1rem;
+}
+.contact-new-info {
+  flex: 1 1 320px;
+  color: #caf0f8;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  min-width: 220px;
+}
+.contact-new-info h2 {
+  font-size: 2rem;
+  margin-bottom: 1.2rem;
+  color: #48CAE4;
+}
+.contact-new-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+.contact-new-info li {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  font-size: 1.1rem;
+}
+.contact-new-info i {
+  color: #48CAE4;
+  font-size: 1.3rem;
+  min-width: 1.5em;
+  text-align: center;
+}
+.contact-new-socials {
+  display: flex;
+  gap: 1.2rem;
+}
+.contact-new-socials a {
+  color: #ADE8F4;
+  font-size: 1.5rem;
+  transition: color 0.2s;
+}
+.contact-new-socials a:hover {
+  color: #00B4D8;
+}
+.contact-new-form-card {
+  flex: 1 1 400px;
+  background: rgba(24, 24, 27, 0.7);
+  box-shadow: 0 4px 32px rgba(0,0,0,0.18);
+  border-radius: 18px;
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-width: 280px;
+  max-width: 480px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  backdrop-filter: blur(8px);
+}
+.contact-new-form-card h3 {
+  color: #ADE8F4;
+  font-size: 1.3rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+.contact-new-form-group {
+  margin-bottom: 1.2rem;
+  display: flex;
+  flex-direction: column;
+}
+.contact-new-form-group input,
+.contact-new-form-group textarea {
+  background: rgba(0,0,0,0.18);
+  border: 1.5px solid #333;
+  border-radius: 8px;
+  color: #caf0f8;
+  padding: 0.9rem 1rem;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s;
+  resize: none;
+}
+.contact-new-form-group input:focus,
+.contact-new-form-group textarea:focus {
+  border: 1.5px solid #48CAE4;
+}
+.contact-new-btn {
+  background: #00B4D8;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.85rem 2.2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 0.5rem;
+  align-self: flex-end;
+}
+.contact-new-btn:hover, .contact-new-btn:focus {
+  background: #48CAE4;
+  color: #03045E;
+}
+@media (max-width: 900px) {
+  .contact-new-container {
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem 0.5rem;
+  }
+  .contact-new-info, .contact-new-form-card {
+    min-width: unset;
+    max-width: 100vw;
+  }
+  .contact-new-form-card {
+    padding: 1.5rem 0.5rem;
+  }
+}
+
+.pharma-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 2vw;
+  background: rgba(24,24,27,0.95);
+  min-height: 56px;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.10);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.pharma-header-left {
+  display: flex;
+  align-items: center;
+}
+.pharma-logo-placeholder {
+  width: 44px;
+  height: 44px;
+  background: #222;
+  color: #ADE8F4;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+}
+.pharma-header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.2rem;
+}
+.pharma-avatar-placeholder {
+  width: 38px;
+  height: 38px;
+  background: #333;
+  color: #fff;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+}
+.pharma-logout-btn {
+  background: none;
+  border: none;
+  padding: 0.2rem;
+  cursor: pointer;
+  border-radius: 50%;
+  transition: background 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pharma-logout-btn:hover, .pharma-logout-btn:focus {
+  background: #222;
+}
+.pharma-logout-icon {
+  width: 28px;
+  height: 28px;
+  display: block;
+}
+@media (max-width: 600px) {
+  .pharma-header {
+    padding: 0.3rem 1vw;
+    min-height: 44px;
+  }
+  .pharma-logo-placeholder {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+  .pharma-avatar-placeholder {
+    width: 30px;
+    height: 30px;
+    font-size: 0.95rem;
+  }
+  .pharma-logout-icon {
+    width: 22px;
+    height: 22px;
+  }
+}
+body, #root {
+  padding-top: 0;
+}
+@media (max-width: 600px) {
+  body, #root {
+    padding-top: 0;
+  }
+}
+
+.pharma-logo-with-bg {
+  position: relative;
+  width: 140px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.pharma-logo-bg {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  opacity: 0.7;
+  z-index: 1;
+  object-fit: contain;
+}
+.pharma-logo-text {
+  position: relative;
+  z-index: 2;
+  color: #ADE8F4;
+  font-weight: 700;
+  font-size: 1.3rem;
+  margin-left: 48px;
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+@media (max-width: 600px) {
+  .pharma-logo-with-bg {
+    width: 100px;
+    height: 36px;
+  }
+  .pharma-logo-bg {
+    width: 32px;
+    height: 32px;
+  }
+  .pharma-logo-text {
+    font-size: 1rem;
+    margin-left: 36px;
+  }
+}
+
+.pharma-logo-center {
+  position: relative;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pharma-logo-center-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.95rem;
+  color: #ADE8F4;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.18);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.pharma-logo-center-img {
+  width: 40px;
+  height: 40px;
+}
+@media (max-width: 600px) {
+  .pharma-logo-center {
+    width: 28px;
+    height: 28px;
+  }
+  .pharma-logo-center-img {
+    width: 28px;
+    height: 28px;
+  }
+  .pharma-logo-center-text {
+    font-size: 0.65rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    max-width: 90%;
+  }
+}
+
+@media (max-width: 700px) {
+  .features-section {
+    padding: 0.7rem 0.1rem;
+  }
+  .service-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    align-items: stretch;
+  }
+  .service-card {
+    width: 96%;
+    min-width: 0;
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.10);
+    padding: 0.7rem 0.5rem 1rem 0.5rem;
+    background: rgba(24,24,27,0.95);
+    max-width: 320px;
+  }
+  .service-card .service-image {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0.5rem;
+    padding: 0;
+    border-radius: 8px;
+  }
+  .service-card h3 {
+    font-size: 0.95rem;
+    margin: 0.5rem 0 0.3rem 0;
+  }
+  .service-card p {
+    font-size: 0.85rem;
+    margin-bottom: 0.7rem;
+  }
+  .service-card .button, .service-card .animated-button {
+    font-size: 0.95rem;
+    padding: 0.5rem 1.1rem;
+    border-radius: 8px;
+  }
+}
+
+@media (max-width: 700px) {
+  .contact-new-container {
+    flex-direction: column;
+    gap: 1.2rem;
+    padding: 1.2rem 0.3rem;
+    align-items: stretch;
+  }
+  .contact-new-info {
+    gap: 1.2rem;
+    font-size: 0.98rem;
+    padding: 0.5rem 0.2rem;
+  }
+  .contact-new-info h2 {
+    font-size: 1.2rem;
+    margin-bottom: 0.7rem;
+  }
+  .contact-new-info ul {
+    gap: 0.7rem;
+  }
+  .contact-new-info li {
+    font-size: 0.95rem;
+  }
+  .contact-new-socials a {
+    font-size: 1.1rem;
+  }
+  .contact-new-form-card {
+    max-width: 100vw;
+    min-width: unset;
+    padding: 1rem 0.2rem;
+    border-radius: 12px;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.10);
+  }
+  .contact-new-form-card h3 {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+  }
+  .contact-new-form-group input,
+  .contact-new-form-group textarea {
+    font-size: 0.95rem;
+    padding: 0.6rem 0.7rem;
+    border-radius: 6px;
+  }
+  .contact-new-btn {
+    font-size: 0.98rem;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    margin-top: 0.3rem;
+  }
+}
+
+.pharma-avatar-placeholder.clickable {
+  cursor: pointer;
+  border: 2px solid #48CAE4;
+  transition: box-shadow 0.2s, border 0.2s;
+}
+.pharma-avatar-placeholder.clickable:focus, .pharma-avatar-placeholder.clickable:hover {
+  box-shadow: 0 0 0 2px #ADE8F4;
+  border: 2px solid #ADE8F4;
+}
+.pharma-user-dropdown {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  background: #18181b;
+  color: #caf0f8;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  min-width: 180px;
+  padding: 1rem 1.2rem;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.7rem;
+}
+.pharma-user-initials {
+  width: 32px;
+  height: 32px;
+  background: #333;
+  color: #ADE8F4;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 0.2rem;
+}
+.pharma-user-email {
+  font-size: 0.95rem;
+  color: #ADE8F4;
+  margin-bottom: 0.5rem;
+}
+.pharma-signin-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 3000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pharma-signin-content {
+  background: #18181b;
+  color: #caf0f8;
+  border-radius: 12px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.18);
+  padding: 2rem 2.5rem;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+}
+.pharma-btn {
+  background: #00B4D8;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin: 0.2rem 0;
+  transition: background 0.2s;
+}
+.pharma-btn:hover, .pharma-btn:focus {
+  background: #48CAE4;
+  color: #03045E;
+}
+@media (max-width: 600px) {
+  .pharma-user-dropdown {
+    min-width: 140px;
+    padding: 0.7rem 0.7rem;
+    font-size: 0.95rem;
+  }
+  .pharma-signin-content {
+    padding: 1.2rem 0.7rem;
+    min-width: 120px;
+  }
+}
+
+@theme inline {
+  --shadow-input:
+    0px 2px 3px -1px rgba(0, 0, 0, 0.1),
+    0px 1px 0px 0px rgba(25, 28, 33, 0.02),
+    0px 0px 0px 1px rgba(25, 28, 33, 0.08);
+}
+
+.pharma-login-bg, .pharma-login-bg * {
+  box-sizing: border-box;
+}
+.shadow-input.pharma-login-card, .pharma-login-card, .max-w-md {
+  max-width: 340px !important;
+  min-width: 0 !important;
+  padding: 1.2rem 1rem !important;
+  border-radius: 12px !important;
+}
+.shadow-input.pharma-login-card h2, .pharma-login-card h2, .max-w-md h2 {
+  font-size: 1.1rem !important;
+  margin-bottom: 0.7rem !important;
+}
+.shadow-input.pharma-login-card p, .pharma-login-card p, .max-w-md p {
+  font-size: 0.92rem !important;
+}
+.shadow-input.pharma-login-card input, .pharma-login-card input, .max-w-md input {
+  font-size: 0.95rem !important;
+  padding: 0.5rem 0.7rem !important;
+  border-radius: 6px !important;
+}
+.shadow-input.pharma-login-card button, .pharma-login-card button, .max-w-md button {
+  font-size: 0.98rem !important;
+  padding: 0.6rem 1.2rem !important;
+  border-radius: 6px !important;
+}
+@media (max-width: 600px) {
+  .shadow-input.pharma-login-card, .pharma-login-card, .max-w-md {
+    max-width: 98vw !important;
+    padding: 0.7rem 0.2rem !important;
+  }
+}
+
+/* Login Page Google Auth Card Styles */
+.pharma-login-bg {
+  min-height: 100vh;
+  width: 100vw;
+  background: #111;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pharma-login-card {
+  background: #18181b;
+  box-shadow: 0 4px 32px 0 rgba(0,0,0,0.18);
+  border-radius: 1.25rem;
+  padding: 2.5rem 2rem 2rem 2rem;
+  min-width: 320px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.pharma-login-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.pharma-google-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #18181b;
+  cursor: pointer;
+  box-shadow: 0 2px 8px 0 rgba(0,0,0,0.10);
+  transition: box-shadow 0.2s, background 0.2s;
+}
+.pharma-google-btn:hover {
+  box-shadow: 0 4px 16px 0 rgba(66,133,244,0.10);
+  background: #f3f4f6;
+}
+.pharma-google-icon {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+}
+
+@media (max-width: 600px) {
+  .pharma-login-card {
+    min-width: 90vw;
+    padding: 1.5rem 1rem;
+  }
+  .pharma-login-title {
+    font-size: 1.15rem;
+  }
+  .pharma-google-btn {
+    font-size: 0.95rem;
+    padding: 0.65rem 1rem;
+  }
+  .pharma-google-icon {
+    width: 22px;
+    height: 22px;
+  }
+}
+
+/* Login Page Google Auth Card Styles - Compact Box with Logo */
+.pharma-login-bg-dark {
+  min-height: 100vh;
+  width: 100vw;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pharma-login-card-dark {
+  background: #111;
+  box-shadow: 0 4px 32px 0 rgba(0,0,0,0.18);
+  border-radius: 1.25rem;
+  padding: 1.5rem 1.25rem 1.25rem 1.25rem;
+  min-width: 0;
+  max-width: 420px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.pharma-login-logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+  margin-top: -0.5rem;
+  z-index: 2;
+}
+
+.pharma-login-gradient-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 7px;
+  border-top-left-radius: 1.25rem;
+  border-top-right-radius: 1.25rem;
+  background: linear-gradient(90deg, #48CAE4 0%, #00B4D8 50%, #ADE8F4 100%);
+}
+
+.pharma-login-title-dark {
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #ADE8F4;
+  margin-bottom: 0.2rem;
+  text-align: center;
+  letter-spacing: 0.01em;
+}
+
+.pharma-login-desc {
+  color: #48CAE4;
+  font-size: 0.97rem;
+  text-align: center;
+  margin-bottom: 0.2rem;
+  line-height: 1.4;
+}
+
+.pharma-login-highlight {
+  color: #ADE8F4;
+  font-weight: 600;
+}
+
+.pharma-google-btn-dark {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: #00B4D8;
+  border: none;
+  border-radius: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 2px 8px 0 rgba(0,180,216,0.10);
+  transition: box-shadow 0.2s, background 0.2s;
+}
+.pharma-google-btn-dark:hover {
+  box-shadow: 0 4px 16px 0 rgba(0,180,216,0.18);
+  background: #009bb3;
+}
+.pharma-google-icon-dark {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+}
+
+@media (max-width: 600px) {
+  .pharma-login-card-dark {
+    max-width: 98vw;
+    padding: 1rem 0.5rem;
+  }
+  .pharma-login-logo {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 0.3rem;
+  }
+  .pharma-login-title-dark {
+    font-size: 1rem;
+  }
+  .pharma-login-desc {
+    font-size: 0.9rem;
+  }
+  .pharma-google-btn-dark {
+    font-size: 0.93rem;
+    padding: 0.55rem 0.8rem;
+  }
+  .pharma-google-icon-dark {
+    width: 18px;
+    height: 18px;
+  }
+}
