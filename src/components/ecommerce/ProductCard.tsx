@@ -42,11 +42,12 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, showQuickView = true
   return (
     <Card className="group relative overflow-hidden transition-all duration-300 hover:shadow-lg hover:scale-105 bg-black border-[#00B4D8]">
       {/* Product Image */}
-      <div className="relative aspect-square overflow-hidden">
+      <div className="relative overflow-hidden h-48 w-full flex items-center justify-center bg-gray-900">
         <img
           src={product.images[0] || '/first-aid.jpg'}
           alt={product.name}
           className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+          style={{ maxHeight: '100%', maxWidth: '100%' }}
         />
         
         {/* Badges */}
