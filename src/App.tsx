@@ -42,6 +42,7 @@ const App: React.FC = () => {
                           location.pathname === '/signup' ||
                           location.pathname === '/ecommerce' ||
                           location.pathname.startsWith('/product/');
+  const isAdminRoute = location.pathname === '/admin';
   
 
 
@@ -63,6 +64,11 @@ const App: React.FC = () => {
               {/* Add more e-commerce routes here */}
             </Routes>
           </>
+        ) : isAdminRoute ? (
+          // Admin layout (no header, footer, or floating dock)
+          <Routes>
+            <Route path="/admin" element={<AdminPanel />} />
+          </Routes>
         ) : (
           // Original layout
           <>
@@ -71,7 +77,7 @@ const App: React.FC = () => {
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/login" element={<LoginPageOld />} />
-              <Route path="/admin" element={<AdminPanel />} />
+              {/* <Route path="/admin" element={<AdminPanel />} /> */}
               {/* Future pages: */}
               {/* <Route path="/about" element={<AboutPage />} /> */}
             </Routes>

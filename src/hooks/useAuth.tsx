@@ -29,17 +29,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     // For now, we'll use a mock user. In the future, integrate with your existing login system
     const mockUser: User = {
       id: '1',
-      email: 'user@example.com',
-      full_name: 'John Doe',
-      role: 'customer',
+      email: 'admin@example.com',
+      full_name: 'Admin User',
+      role: 'admin',
       phone: '+1234567890',
-      address: '123 Main St, City, State',
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString(),
     };
     
     // Uncomment the line below to simulate a logged-in user
-    // setUser(mockUser);
+    setUser(mockUser);
   }, []);
 
   const signIn = async (email: string, password: string) => {
