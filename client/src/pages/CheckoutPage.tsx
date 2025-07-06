@@ -1,159 +1,212 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, CreditCard, Truck, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Truck, Plane, CreditCard, Smartphone, Wallet, CheckCircle } from 'lucide-react';
 import { Button } from '../components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { Badge } from '../components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Input } from '../components/ui/input';
+import { Label } from '../components/ui/label';
 import { useCart } from '../hooks/useCart';
 import { useAuth } from '../hooks/useAuth';
 import { formatPrice } from '../utils';
-import { mockPaymentMethods } from '../lib/mockData';
+
+interface Address {
+  full_name: string;
+  phone: string;
+  address_line1: string;
+  address_line2: string;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+}
+
+interface CheckoutForm {
+  delivery_type: 'normal' | 'drone';
+  shipping_address: Address;
+  billing_address: Address;
+  payment_method: 'cod' | 'card' | 'upi' | 'netbanking';
+  notes: string;
+  use_same_address: boolean;
+}
 
 const CheckoutPage: React.FC = () => {
-  const { cartItems, getCartTotal, clearCart } = useCart();
-  const { user } = useAuth();
   const navigate = useNavigate();
-  
-  const [currentStep, setCurrentStep] = useState(1);
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [orderPlaced, setOrderPlaced] = useState(false);
-  
-  const [formData, setFormData] = useState({
-    fullName: user?.full_name || '',
-    email: user?.email || '',
-    phone: '',
-    address: {
-      line1: '',
-      line2: '',
+  const { cartItems, getCartTotal, clearCart, loading } = useCart();
+  const { user } = useAuth();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderSuccess, setOrderSuccess] = useState(false);
+  const [orderId, setOrderId] = useState<string>('');
+
+  const [form, setForm] = useState<CheckoutForm>({
+    delivery_type: 'normal',
+    shipping_address: {
+      full_name: user?.full_name || '',
+      phone: '',
+      address_line1: '',
+      address_line2: '',
       city: '',
       state: '',
-      postalCode: '',
+      postal_code: '',
       country: 'India',
     },
-    paymentMethod: 'cod',
-    saveAddress: false,
+    billing_address: {
+      full_name: user?.full_name || '',
+      phone: '',
+      address_line1: '',
+      address_line2: '',
+      city: '',
+      state: '',
+      postal_code: '',
+      country: 'India',
+    },
+    payment_method: 'cod',
+    notes: '',
+    use_same_address: true,
   });
 
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+
+    if (cartItems.length === 0) {
+      navigate('/cart');
+      return;
+    }
+  }, [user, cartItems, navigate]);
+
+  const handleAddressChange = (type: 'shipping' | 'billing', field: keyof Address, value: string) => {
+    setForm(prev => ({
+      ...prev,
+      [type === 'shipping' ? 'shipping_address' : 'billing_address']: {
+        ...prev[type === 'shipping' ? 'shipping_address' : 'billing_address'],
+        [field]: value,
+      },
+    }));
+  };
+
+  const handleUseSameAddress = (checked: boolean) => {
+    setForm(prev => ({
+      ...prev,
+      use_same_address: checked,
+      billing_address: checked ? prev.shipping_address : prev.billing_address,
+    }));
+  };
 
   const subtotal = getCartTotal();
-  const shipping = subtotal >= 500 ? 0 : 50;
-  const total = subtotal + shipping;
+  const shipping_fee = form.delivery_type === 'drone' ? 100 : 50;
+  const tax = subtotal * 0.18; // 18% GST
+  const total = subtotal + shipping_fee + tax;
 
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
 
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
-    }
-
-    if (!formData.email) {
-      newErrors.email = 'Email is required';
-    }
-
-    if (!formData.phone) {
-      newErrors.phone = 'Phone number is required';
-    }
-
-    if (!formData.address.line1.trim()) {
-      newErrors.addressLine1 = 'Address is required';
-    }
-
-    if (!formData.address.city.trim()) {
-      newErrors.city = 'City is required';
-    }
-
-    if (!formData.address.state.trim()) {
-      newErrors.state = 'State is required';
-    }
-
-    if (!formData.address.postalCode.trim()) {
-      newErrors.postalCode = 'Postal code is required';
-    }
-
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  const handleInputChange = (field: string, value: string) => {
-    if (field.includes('.')) {
-      const [parent, child] = field.split('.');
-      setFormData(prev => ({
-        ...prev,
-        [parent]: {
-          ...prev[parent as keyof typeof prev],
-          [child]: value,
+    try {
+      const token = localStorage.getItem('pharmafly_token');
+      const response = await fetch('http://localhost:3001/api/orders', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
         },
-      }));
-    } else {
-      setFormData(prev => ({ ...prev, [field]: value }));
-    }
-    
-    // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: '' }));
+        body: JSON.stringify({
+          items: cartItems.map(item => ({
+            product_id: item.product._id || item.product.id,
+            quantity: item.quantity,
+          })),
+          delivery_type: form.delivery_type,
+          shipping_address: form.shipping_address,
+          billing_address: form.use_same_address ? form.shipping_address : form.billing_address,
+          payment_method: form.payment_method,
+          notes: form.notes,
+        }),
+      });
+
+      if (response.ok) {
+        const order = await response.json();
+        
+        // If payment method is not COD, redirect to payment page
+        if (form.payment_method !== 'cod') {
+          navigate('/payment', {
+            state: {
+              paymentData: {
+                orderId: order._id,
+                amount: order.total_amount,
+                paymentMethod: form.payment_method,
+              }
+            }
+          });
+        } else {
+          // For COD orders, show success directly
+          setOrderId(order._id);
+          setOrderSuccess(true);
+          await clearCart();
+        }
+      } else {
+        const error = await response.json();
+        alert(error.message || 'Failed to create order');
+      }
+    } catch (error) {
+      console.error('Error creating order:', error);
+      alert('Failed to create order. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  const handleNextStep = () => {
-    if (validateForm()) {
-      setCurrentStep(prev => prev + 1);
-    }
-  };
-
-  const handlePlaceOrder = async () => {
-    setIsProcessing(true);
-    
-    // Simulate order processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    setIsProcessing(false);
-    setOrderPlaced(true);
-    
-    // Clear cart after successful order
-    setTimeout(() => {
-      clearCart();
-      navigate('/');
-    }, 3000);
-  };
-
-  if (cartItems.length === 0 && !orderPlaced) {
+  if (loading) {
     return (
       <div className="min-h-screen bg-black text-[#CAF0F8] flex items-center justify-center">
         <div className="text-center">
-          <h2 className="text-2xl font-bold text-[#48CAE4] mb-4">Your cart is empty</h2>
-          <Button variant="pharma" onClick={() => navigate('/products')}>
-            Continue Shopping
-          </Button>
+          <div className="w-8 h-8 border-2 border-[#00B4D8] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p>Loading checkout...</p>
         </div>
       </div>
     );
   }
 
-  if (orderPlaced) {
+  if (orderSuccess) {
     return (
       <div className="min-h-screen bg-black text-[#CAF0F8] flex items-center justify-center">
-        <div className="text-center max-w-md mx-auto p-8">
-          <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-6" />
-          <h1 className="text-3xl font-bold text-[#48CAE4] mb-4">Order Placed Successfully!</h1>
-          <p className="text-lg text-gray-400 mb-6">
-            Thank you for your order. You will receive a confirmation email shortly.
-          </p>
-          <div className="bg-gray-900 p-4 rounded-lg border border-[#00B4D8] mb-6">
-            <p className="text-sm text-gray-400">Order ID: ORD-{Date.now()}</p>
-            <p className="text-sm text-gray-400">Total: {formatPrice(total)}</p>
-          </div>
-          <p className="text-sm text-gray-400">
-            Redirecting to home page...
-          </p>
-        </div>
+        <Card className="bg-gray-900 border-[#00B4D8] max-w-md w-full">
+          <CardContent className="p-8 text-center">
+            <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-[#48CAE4] mb-2">Order Placed Successfully!</h2>
+            <p className="text-gray-400 mb-4">
+              Your order has been confirmed and is being processed.
+            </p>
+            <div className="bg-gray-800 p-4 rounded-lg mb-6">
+              <p className="text-sm text-gray-400">Order ID</p>
+              <p className="font-mono text-[#00B4D8]">{orderId}</p>
+            </div>
+            <div className="space-y-3">
+              <Button
+                variant="pharma"
+                className="w-full"
+                onClick={() => navigate(`/orders/${orderId}`)}
+              >
+                Track Order
+              </Button>
+              <Button
+                variant="pharmaOutline"
+                className="w-full"
+                onClick={() => navigate('/products')}
+              >
+                Continue Shopping
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen bg-black text-[#CAF0F8]">
-      <div className="max-w-6xl mx-auto px-4 py-8">
+      <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-4">
@@ -168,222 +221,368 @@ const CheckoutPage: React.FC = () => {
             </Button>
             <h1 className="text-3xl font-bold text-[#48CAE4]">Checkout</h1>
           </div>
-          
-          {/* Progress Steps */}
-          <div className="hidden md:flex items-center space-x-4">
-            {[1, 2, 3].map((step) => (
-              <div key={step} className="flex items-center">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-medium ${
-                  currentStep >= step 
-                    ? 'bg-[#00B4D8] text-[#03045E]' 
-                    : 'bg-gray-700 text-gray-400'
-                }`}>
-                  {step}
-                </div>
-                {step < 3 && (
-                  <div className={`w-12 h-0.5 mx-2 ${
-                    currentStep > step ? 'bg-[#00B4D8]' : 'bg-gray-700'
-                  }`} />
-                )}
-              </div>
-            ))}
-          </div>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Checkout Form */}
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Main Form */}
           <div className="lg:col-span-2 space-y-8">
-            {/* Step 1: Contact Information */}
-            {currentStep === 1 && (
-              <Card className="bg-gray-900 border-[#00B4D8]">
-                <CardHeader>
-                  <CardTitle className="text-[#48CAE4]">Contact Information</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Full Name</label>
-                      <input
-                        type="text"
-                        value={formData.fullName}
-                        onChange={(e) => handleInputChange('fullName', e.target.value)}
-                        className={`w-full p-3 bg-gray-800 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00B4D8] ${
-                          errors.fullName ? 'border-red-500' : 'border-[#00B4D8]'
-                        }`}
-                      />
-                      {errors.fullName && <p className="text-red-400 text-sm mt-1">{errors.fullName}</p>}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Email</label>
-                      <input
-                        type="email"
-                        value={formData.email}
-                        onChange={(e) => handleInputChange('email', e.target.value)}
-                        className={`w-full p-3 bg-gray-800 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00B4D8] ${
-                          errors.email ? 'border-red-500' : 'border-[#00B4D8]'
-                        }`}
-                      />
-                      {errors.email && <p className="text-red-400 text-sm mt-1">{errors.email}</p>}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Phone Number</label>
+            {/* Delivery Type */}
+            <Card className="bg-gray-900 border-[#00B4D8]">
+              <CardHeader>
+                <CardTitle className="text-[#48CAE4]">Delivery Method</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <label className="relative">
                     <input
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => handleInputChange('phone', e.target.value)}
-                      className={`w-full p-3 bg-gray-800 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00B4D8] ${
-                        errors.phone ? 'border-red-500' : 'border-[#00B4D8]'
-                      }`}
+                      type="radio"
+                      name="delivery_type"
+                      value="normal"
+                      checked={form.delivery_type === 'normal'}
+                      onChange={(e) => setForm(prev => ({ ...prev, delivery_type: e.target.value as 'normal' | 'drone' }))}
+                      className="sr-only"
                     />
-                    {errors.phone && <p className="text-red-400 text-sm mt-1">{errors.phone}</p>}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Step 2: Shipping Address */}
-            {currentStep === 2 && (
-              <Card className="bg-gray-900 border-[#00B4D8]">
-                <CardHeader>
-                  <CardTitle className="text-[#48CAE4]">Shipping Address</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-6">
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Address Line 1</label>
-                    <input
-                      type="text"
-                      value={formData.address.line1}
-                      onChange={(e) => handleInputChange('address.line1', e.target.value)}
-                      className={`w-full p-3 bg-gray-800 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00B4D8] ${
-                        errors.addressLine1 ? 'border-red-500' : 'border-[#00B4D8]'
-                      }`}
-                    />
-                    {errors.addressLine1 && <p className="text-red-400 text-sm mt-1">{errors.addressLine1}</p>}
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-2">Address Line 2 (Optional)</label>
-                    <input
-                      type="text"
-                      value={formData.address.line2}
-                      onChange={(e) => handleInputChange('address.line2', e.target.value)}
-                      className="w-full p-3 bg-gray-800 border border-[#00B4D8] rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00B4D8]"
-                    />
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <label className="block text-sm font-medium mb-2">City</label>
-                      <input
-                        type="text"
-                        value={formData.address.city}
-                        onChange={(e) => handleInputChange('address.city', e.target.value)}
-                        className={`w-full p-3 bg-gray-800 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00B4D8] ${
-                          errors.city ? 'border-red-500' : 'border-[#00B4D8]'
-                        }`}
-                      />
-                      {errors.city && <p className="text-red-400 text-sm mt-1">{errors.city}</p>}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">State</label>
-                      <input
-                        type="text"
-                        value={formData.address.state}
-                        onChange={(e) => handleInputChange('address.state', e.target.value)}
-                        className={`w-full p-3 bg-gray-800 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00B4D8] ${
-                          errors.state ? 'border-red-500' : 'border-[#00B4D8]'
-                        }`}
-                      />
-                      {errors.state && <p className="text-red-400 text-sm mt-1">{errors.state}</p>}
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium mb-2">Postal Code</label>
-                      <input
-                        type="text"
-                        value={formData.address.postalCode}
-                        onChange={(e) => handleInputChange('address.postalCode', e.target.value)}
-                        className={`w-full p-3 bg-gray-800 border rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00B4D8] ${
-                          errors.postalCode ? 'border-red-500' : 'border-[#00B4D8]'
-                        }`}
-                      />
-                      {errors.postalCode && <p className="text-red-400 text-sm mt-1">{errors.postalCode}</p>}
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Step 3: Payment Method */}
-            {currentStep === 3 && (
-              <Card className="bg-gray-900 border-[#00B4D8]">
-                <CardHeader>
-                  <CardTitle className="text-[#48CAE4]">Payment Method</CardTitle>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {mockPaymentMethods.map((method) => (
-                    <label
-                      key={method.id}
-                      className={`flex items-center p-4 border rounded-lg cursor-pointer transition-colors ${
-                        formData.paymentMethod === method.type
-                          ? 'border-[#00B4D8] bg-[#00B4D8]/10'
-                          : 'border-gray-700 hover:border-[#00B4D8]'
-                      }`}
-                    >
-                      <input
-                        type="radio"
-                        name="paymentMethod"
-                        value={method.type}
-                        checked={formData.paymentMethod === method.type}
-                        onChange={(e) => handleInputChange('paymentMethod', e.target.value)}
-                        className="text-[#00B4D8] focus:ring-[#00B4D8] mr-3"
-                      />
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <p className="font-medium text-[#CAF0F8]">{method.name}</p>
-                            <p className="text-sm text-gray-400">{method.description}</p>
-                          </div>
-                          <CreditCard className="h-5 w-5 text-[#00B4D8]" />
+                    <div className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                      form.delivery_type === 'normal' 
+                        ? 'border-[#00B4D8] bg-[#00B4D8]/10' 
+                        : 'border-gray-700 hover:border-gray-600'
+                    }`}>
+                      <div className="flex items-center space-x-3">
+                        <Truck className="h-6 w-6 text-[#00B4D8]" />
+                        <div>
+                          <h3 className="font-semibold text-[#CAF0F8]">Standard Delivery</h3>
+                          <p className="text-sm text-gray-400">90 minutes • ₹50</p>
                         </div>
                       </div>
-                    </label>
-                  ))}
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Navigation Buttons */}
-            <div className="flex justify-between">
-              {currentStep > 1 && (
-                <Button
-                  variant="pharmaOutline"
-                  onClick={() => setCurrentStep(prev => prev - 1)}
-                >
-                  Previous
-                </Button>
-              )}
-              <div className="ml-auto">
-                {currentStep < 3 ? (
-                  <Button variant="pharma" onClick={handleNextStep}>
-                    Continue
-                  </Button>
-                ) : (
-                  <Button
-                    variant="pharma"
-                    onClick={handlePlaceOrder}
-                    disabled={isProcessing}
-                  >
-                    {isProcessing ? (
-                      <div className="flex items-center space-x-2">
-                        <div className="w-4 h-4 border-2 border-[#03045E] border-t-transparent rounded-full animate-spin"></div>
-                        <span>Processing...</span>
+                    </div>
+                  </label>
+                  
+                  <label className="relative">
+                    <input
+                      type="radio"
+                      name="delivery_type"
+                      value="drone"
+                      checked={form.delivery_type === 'drone'}
+                      onChange={(e) => setForm(prev => ({ ...prev, delivery_type: e.target.value as 'normal' | 'drone' }))}
+                      className="sr-only"
+                    />
+                    <div className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                      form.delivery_type === 'drone' 
+                        ? 'border-[#00B4D8] bg-[#00B4D8]/10' 
+                        : 'border-gray-700 hover:border-gray-600'
+                    }`}>
+                      <div className="flex items-center space-x-3">
+                        <Plane className="h-6 w-6 text-[#00B4D8]" />
+                        <div>
+                          <h3 className="font-semibold text-[#CAF0F8]">Drone Delivery</h3>
+                          <p className="text-sm text-gray-400">45 minutes • ₹100</p>
+                        </div>
                       </div>
-                    ) : (
-                      `Place Order - ${formatPrice(total)}`
-                    )}
-                  </Button>
+                    </div>
+                  </label>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Shipping Address */}
+            <Card className="bg-gray-900 border-[#00B4D8]">
+              <CardHeader>
+                <CardTitle className="text-[#48CAE4]">Shipping Address</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="shipping_name">Full Name</Label>
+                    <Input
+                      id="shipping_name"
+                      value={form.shipping_address.full_name}
+                      onChange={(e) => handleAddressChange('shipping', 'full_name', e.target.value)}
+                      required
+                      className="bg-gray-800 border-gray-700 text-[#CAF0F8]"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="shipping_phone">Phone</Label>
+                    <Input
+                      id="shipping_phone"
+                      value={form.shipping_address.phone}
+                      onChange={(e) => handleAddressChange('shipping', 'phone', e.target.value)}
+                      required
+                      className="bg-gray-800 border-gray-700 text-[#CAF0F8]"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <Label htmlFor="shipping_address1">Address Line 1</Label>
+                  <Input
+                    id="shipping_address1"
+                    value={form.shipping_address.address_line1}
+                    onChange={(e) => handleAddressChange('shipping', 'address_line1', e.target.value)}
+                    required
+                    className="bg-gray-800 border-gray-700 text-[#CAF0F8]"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="shipping_address2">Address Line 2 (Optional)</Label>
+                  <Input
+                    id="shipping_address2"
+                    value={form.shipping_address.address_line2}
+                    onChange={(e) => handleAddressChange('shipping', 'address_line2', e.target.value)}
+                    className="bg-gray-800 border-gray-700 text-[#CAF0F8]"
+                  />
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <Label htmlFor="shipping_city">City</Label>
+                    <Input
+                      id="shipping_city"
+                      value={form.shipping_address.city}
+                      onChange={(e) => handleAddressChange('shipping', 'city', e.target.value)}
+                      required
+                      className="bg-gray-800 border-gray-700 text-[#CAF0F8]"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="shipping_state">State</Label>
+                    <Input
+                      id="shipping_state"
+                      value={form.shipping_address.state}
+                      onChange={(e) => handleAddressChange('shipping', 'state', e.target.value)}
+                      required
+                      className="bg-gray-800 border-gray-700 text-[#CAF0F8]"
+                    />
+                  </div>
+                  <div>
+                    <Label htmlFor="shipping_postal">Postal Code</Label>
+                    <Input
+                      id="shipping_postal"
+                      value={form.shipping_address.postal_code}
+                      onChange={(e) => handleAddressChange('shipping', 'postal_code', e.target.value)}
+                      required
+                      className="bg-gray-800 border-gray-700 text-[#CAF0F8]"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Billing Address */}
+            <Card className="bg-gray-900 border-[#00B4D8]">
+              <CardHeader>
+                <CardTitle className="text-[#48CAE4]">Billing Address</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <label className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    checked={form.use_same_address}
+                    onChange={(e) => handleUseSameAddress(e.target.checked)}
+                    className="text-[#00B4D8] focus:ring-[#00B4D8]"
+                  />
+                  <span className="text-sm text-gray-300">Same as shipping address</span>
+                </label>
+
+                {!form.use_same_address && (
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <Label htmlFor="billing_name">Full Name</Label>
+                        <Input
+                          id="billing_name"
+                          value={form.billing_address.full_name}
+                          onChange={(e) => handleAddressChange('billing', 'full_name', e.target.value)}
+                          required
+                          className="bg-gray-800 border-gray-700 text-[#CAF0F8]"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="billing_phone">Phone</Label>
+                        <Input
+                          id="billing_phone"
+                          value={form.billing_address.phone}
+                          onChange={(e) => handleAddressChange('billing', 'phone', e.target.value)}
+                          required
+                          className="bg-gray-800 border-gray-700 text-[#CAF0F8]"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <Label htmlFor="billing_address1">Address Line 1</Label>
+                      <Input
+                        id="billing_address1"
+                        value={form.billing_address.address_line1}
+                        onChange={(e) => handleAddressChange('billing', 'address_line1', e.target.value)}
+                        required
+                        className="bg-gray-800 border-gray-700 text-[#CAF0F8]"
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="billing_address2">Address Line 2 (Optional)</Label>
+                      <Input
+                        id="billing_address2"
+                        value={form.billing_address.address_line2}
+                        onChange={(e) => handleAddressChange('billing', 'address_line2', e.target.value)}
+                        className="bg-gray-800 border-gray-700 text-[#CAF0F8]"
+                      />
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                      <div>
+                        <Label htmlFor="billing_city">City</Label>
+                        <Input
+                          id="billing_city"
+                          value={form.billing_address.city}
+                          onChange={(e) => handleAddressChange('billing', 'city', e.target.value)}
+                          required
+                          className="bg-gray-800 border-gray-700 text-[#CAF0F8]"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="billing_state">State</Label>
+                        <Input
+                          id="billing_state"
+                          value={form.billing_address.state}
+                          onChange={(e) => handleAddressChange('billing', 'state', e.target.value)}
+                          required
+                          className="bg-gray-800 border-gray-700 text-[#CAF0F8]"
+                        />
+                      </div>
+                      <div>
+                        <Label htmlFor="billing_postal">Postal Code</Label>
+                        <Input
+                          id="billing_postal"
+                          value={form.billing_address.postal_code}
+                          onChange={(e) => handleAddressChange('billing', 'postal_code', e.target.value)}
+                          required
+                          className="bg-gray-800 border-gray-700 text-[#CAF0F8]"
+                        />
+                      </div>
+                    </div>
+                  </div>
                 )}
-              </div>
-            </div>
+              </CardContent>
+            </Card>
+
+            {/* Payment Method */}
+            <Card className="bg-gray-900 border-[#00B4D8]">
+              <CardHeader>
+                <CardTitle className="text-[#48CAE4]">Payment Method</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <label className="relative">
+                    <input
+                      type="radio"
+                      name="payment_method"
+                      value="cod"
+                      checked={form.payment_method === 'cod'}
+                      onChange={(e) => setForm(prev => ({ ...prev, payment_method: e.target.value as any }))}
+                      className="sr-only"
+                    />
+                    <div className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                      form.payment_method === 'cod' 
+                        ? 'border-[#00B4D8] bg-[#00B4D8]/10' 
+                        : 'border-gray-700 hover:border-gray-600'
+                    }`}>
+                      <div className="flex items-center space-x-3">
+                        <Wallet className="h-6 w-6 text-[#00B4D8]" />
+                        <div>
+                          <h3 className="font-semibold text-[#CAF0F8]">Cash on Delivery</h3>
+                          <p className="text-sm text-gray-400">Pay when you receive</p>
+                        </div>
+                      </div>
+                    </div>
+                  </label>
+                  
+                  <label className="relative">
+                    <input
+                      type="radio"
+                      name="payment_method"
+                      value="card"
+                      checked={form.payment_method === 'card'}
+                      onChange={(e) => setForm(prev => ({ ...prev, payment_method: e.target.value as any }))}
+                      className="sr-only"
+                    />
+                    <div className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                      form.payment_method === 'card' 
+                        ? 'border-[#00B4D8] bg-[#00B4D8]/10' 
+                        : 'border-gray-700 hover:border-gray-600'
+                    }`}>
+                      <div className="flex items-center space-x-3">
+                        <CreditCard className="h-6 w-6 text-[#00B4D8]" />
+                        <div>
+                          <h3 className="font-semibold text-[#CAF0F8]">Credit/Debit Card</h3>
+                          <p className="text-sm text-gray-400">Secure online payment</p>
+                        </div>
+                      </div>
+                    </div>
+                  </label>
+                  
+                  <label className="relative">
+                    <input
+                      type="radio"
+                      name="payment_method"
+                      value="upi"
+                      checked={form.payment_method === 'upi'}
+                      onChange={(e) => setForm(prev => ({ ...prev, payment_method: e.target.value as any }))}
+                      className="sr-only"
+                    />
+                    <div className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                      form.payment_method === 'upi' 
+                        ? 'border-[#00B4D8] bg-[#00B4D8]/10' 
+                        : 'border-gray-700 hover:border-gray-600'
+                    }`}>
+                      <div className="flex items-center space-x-3">
+                        <Smartphone className="h-6 w-6 text-[#00B4D8]" />
+                        <div>
+                          <h3 className="font-semibold text-[#CAF0F8]">UPI</h3>
+                          <p className="text-sm text-gray-400">Instant payment</p>
+                        </div>
+                      </div>
+                    </div>
+                  </label>
+                  
+                  <label className="relative">
+                    <input
+                      type="radio"
+                      name="payment_method"
+                      value="netbanking"
+                      checked={form.payment_method === 'netbanking'}
+                      onChange={(e) => setForm(prev => ({ ...prev, payment_method: e.target.value as any }))}
+                      className="sr-only"
+                    />
+                    <div className={`p-4 border-2 rounded-lg cursor-pointer transition-all ${
+                      form.payment_method === 'netbanking' 
+                        ? 'border-[#00B4D8] bg-[#00B4D8]/10' 
+                        : 'border-gray-700 hover:border-gray-600'
+                    }`}>
+                      <div className="flex items-center space-x-3">
+                        <CreditCard className="h-6 w-6 text-[#00B4D8]" />
+                        <div>
+                          <h3 className="font-semibold text-[#CAF0F8]">Net Banking</h3>
+                          <p className="text-sm text-gray-400">Direct bank transfer</p>
+                        </div>
+                      </div>
+                    </div>
+                  </label>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Notes */}
+            <Card className="bg-gray-900 border-[#00B4D8]">
+              <CardHeader>
+                <CardTitle className="text-[#48CAE4]">Additional Notes</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <textarea
+                  value={form.notes}
+                  onChange={(e) => setForm(prev => ({ ...prev, notes: e.target.value }))}
+                  placeholder="Any special instructions or notes for delivery..."
+                  className="w-full p-3 bg-gray-800 border border-gray-700 rounded-lg text-[#CAF0F8] placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#00B4D8]"
+                  rows={3}
+                />
+              </CardContent>
+            </Card>
           </div>
 
           {/* Order Summary */}
@@ -394,7 +593,7 @@ const CheckoutPage: React.FC = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 {/* Cart Items */}
-                <div className="space-y-3 max-h-64 overflow-y-auto">
+                <div className="space-y-3">
                   {cartItems.map((item) => (
                     <div key={item.id} className="flex items-center space-x-3">
                       <div className="w-12 h-12 bg-gray-800 rounded-lg overflow-hidden flex-shrink-0">
@@ -405,61 +604,62 @@ const CheckoutPage: React.FC = () => {
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-[#CAF0F8] truncate">
+                        <h4 className="font-medium text-[#CAF0F8] text-sm truncate">
                           {item.product.name}
-                        </p>
+                        </h4>
                         <p className="text-xs text-gray-400">
-                          Qty: {item.quantity}
+                          Qty: {item.quantity} × {formatPrice(item.product.price)}
                         </p>
                       </div>
-                      <p className="text-sm font-medium text-[#48CAE4]">
-                        {formatPrice(item.product.price * item.quantity)}
-                      </p>
+                      <div className="text-right">
+                        <p className="font-semibold text-[#48CAE4] text-sm">
+                          {formatPrice(item.product.price * item.quantity)}
+                        </p>
+                      </div>
                     </div>
                   ))}
                 </div>
 
-                {/* Totals */}
-                <div className="border-t border-[#00B4D8] pt-4 space-y-2">
-                  <div className="flex justify-between">
+                <div className="border-t border-gray-700 pt-4 space-y-2">
+                  <div className="flex justify-between text-sm">
                     <span className="text-gray-400">Subtotal</span>
                     <span className="text-[#CAF0F8]">{formatPrice(subtotal)}</span>
                   </div>
-                  <div className="flex justify-between">
+                  <div className="flex justify-between text-sm">
                     <span className="text-gray-400">Shipping</span>
-                    <span className="text-[#CAF0F8]">
-                      {shipping === 0 ? 'Free' : formatPrice(shipping)}
-                    </span>
+                    <span className="text-[#CAF0F8]">{formatPrice(shipping_fee)}</span>
                   </div>
-                  {shipping > 0 && (
-                    <div className="text-sm text-[#00B4D8] bg-[#00B4D8]/10 p-2 rounded">
-                      Add ₹{500 - subtotal} more for free shipping
-                    </div>
-                  )}
-                  <div className="border-t border-[#00B4D8] pt-2">
-                    <div className="flex justify-between">
-                      <span className="text-lg font-semibold text-[#48CAE4]">Total</span>
-                      <span className="text-lg font-semibold text-[#48CAE4]">
-                        {formatPrice(total)}
-                      </span>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-400">Tax (18% GST)</span>
+                    <span className="text-[#CAF0F8]">{formatPrice(tax)}</span>
+                  </div>
+                  <div className="border-t border-gray-700 pt-2">
+                    <div className="flex justify-between font-semibold">
+                      <span className="text-[#48CAE4]">Total</span>
+                      <span className="text-[#48CAE4]">{formatPrice(total)}</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Shipping Info */}
-                <div className="bg-gray-800 p-3 rounded-lg">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Truck className="h-4 w-4 text-[#00B4D8]" />
-                    <span className="text-sm font-medium text-[#CAF0F8]">Delivery</span>
-                  </div>
-                  <p className="text-xs text-gray-400">
-                    Estimated delivery: 2-3 business days
-                  </p>
-                </div>
+                <Button
+                  type="submit"
+                  variant="pharma"
+                  className="w-full"
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-[#03045E] border-t-transparent rounded-full animate-spin"></div>
+                      <span>Processing...</span>
+                    </div>
+                  ) : (
+                    `Place Order • ${formatPrice(total)}`
+                  )}
+                </Button>
               </CardContent>
             </Card>
           </div>
-        </div>
+        </form>
       </div>
     </div>
   );

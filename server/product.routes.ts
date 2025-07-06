@@ -1,5 +1,6 @@
 import express from 'express';
 import Product from './product.model';
+import { auth } from './middleware/auth';
 import dbConnect from './lib/db';
 
 const router = express.Router();
@@ -27,8 +28,8 @@ router.get('/:id', async (req, res) => {
   }
 });
 
-// Add new product
-router.post('/', async (req, res) => {
+// Add new product (admin only)
+router.post('/', auth, async (req, res) => {
   await dbConnect();
   try {
     const product = new Product({ ...req.body });
@@ -39,8 +40,8 @@ router.post('/', async (req, res) => {
   }
 });
 
-// Update product
-router.put('/:id', async (req, res) => {
+// Update product (admin only)
+router.put('/:id', auth, async (req, res) => {
   await dbConnect();
   try {
     const product = await Product.findByIdAndUpdate(req.params.id, req.body, { new: true });
@@ -51,8 +52,8 @@ router.put('/:id', async (req, res) => {
   }
 });
 
-// Delete product
-router.delete('/:id', async (req, res) => {
+// Delete product (admin only)
+router.delete('/:id', auth, async (req, res) => {
   await dbConnect();
   try {
     const product = await Product.findByIdAndDelete(req.params.id);

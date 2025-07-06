@@ -4,9 +4,17 @@ import { ArrowRight, Star, Truck, Shield, Clock } from 'lucide-react';
 import { Button } from '../components/ui/button';
 import { Badge } from '../components/ui/badge';
 import ProductCard from '../components/ecommerce/ProductCard';
-import { featuredProducts, categoriesWithProducts } from '../lib/mockData';
+import { categoriesWithProducts } from '../lib/mockData';
+import { useProducts } from '../hooks/useProducts';
 
 const HomePage: React.FC = () => {
+  const { products, loading } = useProducts();
+  
+  // Get featured products (first 8 products or products marked as featured)
+  const featuredProducts = products
+    .filter(product => product.is_featured || product.is_active)
+    .slice(0, 8);
+
   return (
     <div className="min-h-screen bg-black text-[#CAF0F8]">
       {/* Hero Section */}
@@ -89,11 +97,24 @@ const HomePage: React.FC = () => {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {featuredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
-            ))}
-          </div>
+          {loading ? (
+            <div className="text-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00B4D8] mx-auto mb-4"></div>
+              <h3 className="text-xl font-semibold text-[#48CAE4] mb-2">Loading featured products...</h3>
+              <p className="text-gray-400">Please wait while we fetch the latest products</p>
+            </div>
+          ) : featuredProducts.length === 0 ? (
+            <div className="text-center py-12">
+              <h3 className="text-xl font-semibold text-[#48CAE4] mb-2">No featured products available</h3>
+              <p className="text-gray-400 mb-4">Check back soon for new products</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+              {featuredProducts.map((product) => (
+                <ProductCard key={product._id || product.id} product={product} />
+              ))}
+            </div>
+          )}
           
           <div className="text-center mt-12">
             <Link to="/products">
@@ -218,7 +239,7 @@ const HomePage: React.FC = () => {
             Join thousands of satisfied customers who trust MediCart for their healthcare needs
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/signup">
+            <Link to="/register">
               <Button variant="pharma" size="lg" className="text-lg px-8 py-4">
                 Create Account
               </Button>

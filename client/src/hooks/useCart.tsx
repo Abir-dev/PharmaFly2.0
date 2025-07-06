@@ -48,7 +48,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const addToCart = async (product: Product, quantity: number) => {
     try {
       // Check if item already exists in cart
-      const existingItem = cartItems.find(item => item.product_id === product.id);
+      const existingItem = cartItems.find(item => item.product_id === (product._id || product.id));
 
       if (existingItem) {
         // Update quantity
@@ -65,7 +65,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const newCartItem: CartItem = {
           id: Date.now().toString(), // Simple ID generation
           user_id: user?.id || 'anonymous',
-          product_id: product.id,
+          product_id: product._id || product.id,
           quantity,
           product,
           created_at: new Date().toISOString(),

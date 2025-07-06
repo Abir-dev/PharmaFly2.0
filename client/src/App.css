@@ -1060,7 +1060,8 @@ footer .logo {
   align-items: center;
   justify-content: space-between;
   padding: 0.5rem 2vw;
-  background: rgba(24,24,27,0.95);
+  /* background: rgba(24,24,27,0.95); */
+  background: black;
   min-height: 56px;
   box-shadow: 0 2px 16px rgba(0,0,0,0.10);
   position: sticky;

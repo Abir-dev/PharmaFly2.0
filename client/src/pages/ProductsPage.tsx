@@ -7,11 +7,12 @@ import ProductCard from '../components/ecommerce/ProductCard';
 import { mockProducts, mockCategories } from '../lib/mockData';
 import type { Product, SearchFilters } from '../types';
 import { formatPrice } from '../utils';
+import { useProducts } from '../hooks/useProducts';
 
 const ProductsPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>(mockProducts);
+  const { products, loading } = useProducts();
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
@@ -145,13 +146,6 @@ const ProductsPage: React.FC = () => {
     { label: '₹200 - ₹500', min: 200, max: 500 },
     { label: 'Over ₹500', min: 500, max: undefined },
   ];
-
-  useEffect(() => {
-    fetch('http://localhost:3001/api/products')
-      .then(res => res.json())
-      .then(data => setProducts(data))
-      .catch(() => setProducts([]));
-  }, []);
 
   return (
     <div className="min-h-screen bg-black text-[#CAF0F8]">
@@ -340,7 +334,13 @@ const ProductsPage: React.FC = () => {
 
           {/* Products Grid */}
           <div className="flex-1">
-            {paginatedProducts.length === 0 ? (
+            {loading ? (
+              <div className="text-center py-12">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#00B4D8] mx-auto mb-4"></div>
+                <h3 className="text-xl font-semibold text-[#48CAE4] mb-2">Loading products...</h3>
+                <p className="text-gray-400">Please wait while we fetch the latest products</p>
+              </div>
+            ) : paginatedProducts.length === 0 ? (
               <div className="text-center py-12">
                 <h3 className="text-xl font-semibold text-[#48CAE4] mb-2">No products found</h3>
                 <p className="text-gray-400 mb-4">Try adjusting your filters or search terms</p>

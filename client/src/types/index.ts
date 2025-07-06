@@ -1,5 +1,6 @@
 export interface Product {
-  id: string;
+  _id?: string;
+  id?: string;
   name: string;
   description: string;
   price: number;
@@ -19,7 +20,8 @@ export interface Product {
 }
 
 export interface User {
-  id: string;
+  _id?: string;
+  id?: string;
   email: string;
   full_name: string;
   phone?: string;
@@ -54,30 +56,39 @@ export interface Address {
 }
 
 export interface Order {
-  id: string;
+  _id?: string;
+  id?: string;
+  order_number: string;
   user_id: string;
-  user: User;
+  user?: User;
   status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  delivery_type: 'normal' | 'drone';
+  delivery_time_min: number;
+  estimated_delivery: string;
+  actual_delivery?: string;
+  tracking_number?: string;
+  items: OrderItem[];
+  subtotal: number;
+  shipping_fee: number;
+  tax: number;
   total_amount: number;
   shipping_address: Address;
   billing_address: Address;
-  payment_method: 'cod' | 'card' | 'upi';
-  payment_status: 'pending' | 'paid' | 'failed';
-  order_items: OrderItem[];
-  tracking_number?: string;
+  payment_method: 'cod' | 'card' | 'upi' | 'netbanking';
+  payment_status: 'pending' | 'paid' | 'failed' | 'refunded';
+  payment_id?: string;
   notes?: string;
   created_at: string;
   updated_at: string;
 }
 
 export interface OrderItem {
-  id: string;
-  order_id: string;
-  product_id: string;
-  product: Product;
+  product_id: string | { _id: string; name: string; images: string[] };
+  product_name: string;
+  product_price: number;
   quantity: number;
-  price: number;
-  created_at: string;
+  total_price: number;
+  prescription_required: boolean;
 }
 
 export interface Category {
